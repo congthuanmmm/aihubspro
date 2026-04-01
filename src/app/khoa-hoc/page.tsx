@@ -7,7 +7,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { PlayCircle, Star, Users } from "lucide-react";
 
 import Link from "next/link";
-import coursesData from "@/data/khoa-hoc.json";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { Course } from "@/types/course";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -25,7 +28,26 @@ const cardVariant = {
 };
 
 export default function KhoaHocPage() {
-  const courses = coursesData;
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "courses"));
+        const list: Course[] = [];
+        snapshot.forEach((doc) => {
+          list.push(doc.data() as Course);
+        });
+        setCourses(list);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">

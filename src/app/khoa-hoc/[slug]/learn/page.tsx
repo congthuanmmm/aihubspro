@@ -10,7 +10,7 @@ import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import { Lock, PlayCircle, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import coursesData from "@/data/khoa-hoc.json";
+import { Course } from "@/types/course";
 
 export default function CourseLearnPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -18,8 +18,27 @@ export default function CourseLearnPage({ params }: { params: Promise<{ slug: st
   const router = useRouter();
   
   const [access, setAccess] = useState<"loading" | "granted" | "denied">("loading");
+  const [course, setCourse] = useState<Course | null>(null);
+  const [courseLoading, setCourseLoading] = useState(true);
 
-  const course = coursesData.find((c) => c.id === slug);
+  // Lấy dữ liệu khóa học
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "courses", slug));
+        if (docSnap.exists()) {
+          setCourse(docSnap.data() as Course);
+        } else {
+          setCourse(null);
+        }
+      } catch (e) {
+        console.error("Lỗi tải khóa học:", e);
+      } finally {
+        setCourseLoading(false);
+      }
+    };
+    fetchCourse();
+  }, [slug]);
 
   // Kiểm tra quyền truy cập (Access Control) trong Firestore
   useEffect(() => {
@@ -54,8 +73,8 @@ export default function CourseLearnPage({ params }: { params: Promise<{ slug: st
     return <div className="p-20 text-center text-red-500 font-bold text-2xl">404 - KHÔNG TÌM THẤY KHÓA HỌC</div>;
   }
 
-  // UI Đang Loading / Kiểm tra Auth
-  if (access === "loading" || authLoading) {
+  // Gộp loading course và auth
+  if (access === "loading" || authLoading || courseLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
         <Loader2 className="w-12 h-12 text-cyan-500 animate-spin mb-4" />

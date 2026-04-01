@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import courses from "@/data/khoa-hoc.json";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { Course } from "@/types/course";
 import { PayOS } from "@payos/node";
 
 export async function POST(request: Request) {
@@ -12,15 +12,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Bạn cần đăng nhập để mua khóa học!" }, { status: 401 });
     }
 
-    // Lấy data khóa học từ JSON đã import
-    const course = courses.find((c: any) => c.id === courseId);
-
-    if (!course) {
+    // Lấy data khóa học từ Firestore
+    const courseSnap = await getDoc(doc(db, "courses", courseId));
+    if (!courseSnap.exists()) {
       return NextResponse.json({ error: "Không tìm thấy khóa học" }, { status: 404 });
     }
+    const course = courseSnap.data() as Course;
 
     // Sinh mã đơn hàng ngẫu nhiên (chỉ được tối đa 53 bit ~ number)
-    const orderCode = Number(String(Date.now()).slice(-6)); 
+    const orderCode = Number(String(Date.now()).slice(-6));
 
     // Ghi pending order vào Database
     const orderRef = doc(db, "pending_orders", `${orderCode}`);

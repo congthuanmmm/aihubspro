@@ -8,7 +8,9 @@ import { motion } from "framer-motion";
 import { Check, PlayCircle, Star, Users, ArrowLeft, Loader2, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import coursesData from "@/data/khoa-hoc.json";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { Course } from "@/types/course";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CourseSalePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -16,8 +18,34 @@ export default function CourseSalePage({ params }: { params: Promise<{ slug: str
   const { user } = useAuth();
   const { slug } = use(params);
   const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [fetching, setFetching] = useState(true);
 
-  const course = coursesData.find((c) => c.id === slug);
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "courses", slug));
+        if (docSnap.exists()) {
+          setCourse(docSnap.data() as Course);
+        } else {
+          setCourse(null);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchCourse();
+  }, [slug]);
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
+      </div>
+    );
+  }
 
   if (!course) {
     notFound();
