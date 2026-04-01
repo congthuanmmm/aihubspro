@@ -80,10 +80,18 @@ export default function KhoaHocPage() {
         <Button variant="ghost" className="rounded-full">Xây Kênh Social</Button>
       </motion.div>
 
-      {/* Course Cards — stagger */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        variants={staggerContainer}
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : courses.length === 0 ? (
+        <div className="text-center py-20 text-slate-400">
+          Hiện chưa có khóa học nào hoặc hệ thống đang bảo trì. Vui lòng quay lại sau!
+        </div>
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
@@ -127,7 +135,8 @@ export default function KhoaHocPage() {
             </Link>
           </motion.div>
         ))}
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }
