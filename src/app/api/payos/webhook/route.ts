@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return await handlePaymentSuccess(orderCode);
   }
 
-  return NextResponse.json({ error: "Invalid Request" }, { status: 400 });
+  return NextResponse.json({ success: true, message: "Webhook endpoint ready" }, { status: 200 });
 }
 
 // Xử lý Thực Tế qua POST (Webhook thật từ PayOS)
@@ -50,7 +50,7 @@ async function handlePaymentSuccess(orderCode: string, isReal = false) {
     const pendingSnap = await getDoc(pendingRef);
 
     if (!pendingSnap.exists()) {
-      return NextResponse.json({ error: "Order Not Found" }, { status: 404 });
+      return NextResponse.json({ success: true, message: "Order Not Found or Test Webhook" }, { status: 200 });
     }
 
     const orderData = pendingSnap.data();
