@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1774682312092",
+    "slug": "chia-se-mot-vai-cai-dat-ma-minh-setup-de-su-dung-oc",
+    "title": "chia sẻ một vài cài đặt mà mình setup để sử dụng OC. ",
+    "excerpt": "Hôm qua thấy Admin đăng bài hướng dẫn cài đặt ",
+    "category": "Tutorial",
+    "date": "28/3/2026",
+    "readTime": "3 min read",
+    "author": "Admin",
+    "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop",
+    "featured": false,
+    "coverImage": "https://i.postimg.cc/4x56bPZ3/2-ok.png",
+    "content": "Hôm qua thấy Admin đăng bài hướng dẫn cài đặt #openclaw nên mình cũng **“Kém miếng khó chịu”**. Nay xin phép được chia sẻ một vài cài đặt mà mình setup để sử dụng OC.\n\nMình thấy mọi người hay nhắc đến việc sử dụng bị tốn kém, token burn rất nhiều. Việc này thì khó mà tránh khỏi vì vốn Openclaw sinh ra với mục đích Assistant. Nói ít hiểu nhiều, nên mỗi lần **“phục vụ”** mình thì cơ chế của Openclaw lấy rất nhiều thông tin để từ đó tạo ra được kết quả phù hợp nhất.\n\nTuy nhiên, phần lớn mọi người va vào Openclaw sớm nên mình mạn phép chia sẻ một vài điều mình biết dành cho bạn nào chưa rõ thì chúng ta cũng có thể dễ hình dung hơn.\n\n- Mỗi lần chúng ta gửi tin nhắn là một lần xử lý riêng biệt, thông qua Openclaw, chúng ta tương tác với các mô hình Large Language Model và nhận được phản hồi.\n- Cái cảm giác có được 1 cuộc hội thoại, thực chất là được xử lý ở phần Session của Openclaw, nơi tất cả các tin nhắn cũ được lưu lại, từng dòng phản hồi, các thông tin về công cụ được sử dụng cũng như kết quả của từng lần sử dụng công cụ được lưu lại và được gửi kèm thêm cùng dòng tin nhắn **“mới”**. Để từ đó LLM biết chúng ta đang nói về cái gì và bối cảnh như nào mà tạo ra được câu trả lời phù hợp.\n- Điều này có nghĩa, chat càng dài, càng lâu, thì khối lượng thông tin gửi đến LLM ngày càng nhiều và đó là nguyên nhân gốc rễ cho việc sử dụng bị tốn. Lúc này, dù chỉ hỏi 1 câu vu vơ nhưng toàn bộ tin nhắn cũ được đính kèm và chúng ta bị **“tính tiền”** cho toàn bộ chỗ thông tin này.\n\n![](https://i.postimg.cc/4x56bPZ3/2-ok.png)\n\nĐể xử lý ở mức cơ bản, chúng ta có thể sử dụng những command như là:\n\n- **new:** tạo một session mới\n- **reset:** giữ session cũ nhưng clear hết thông tin cũ đi\n- **compact:** summary lại session hiện tại và tiếp tục câu chuyện.\n\n<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/iOdFZLb4gYo?si=j_KcJcF_Nb6amiPq\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>Tuy nhiên, dần dà khi càng sử dụng nhiều hơn, chúng ta sẽ có những yêu cầu đặt biệt hơn, chat nhiều chủ đề cùng lúc, xử lý nhiều việc chồng chéo lẫn nhau. Vậy thì với những trường hợp này thì mọi người có thể tham khảo cách sử dụng:\n\n- **Channels:** Mỗi một kênh là một session riêng, đảm bảo rằng context không bị lẫn lộn giữa các công việc khác nhau, giúp xử lý chuyên biệt từng kênh công việc một.\n- Sub-agents\n- Multiple Agents Architecture\n- ACP chuyên biệt cho Coding Agents\n\nMình có đính kèm video nói dài dòng về mấy việc này ở comments. Nếu mọi người thấy có ích, hãy để lại bình luận để mình tiếp tục làm những content như này nhiều hơn.\n\nCám ơn mọi người và chúc mọi người một ngày cuối tuần vui vẻ!!",
+    "status": "Published"
+  }
+]

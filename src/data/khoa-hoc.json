@@ -1,0 +1,81 @@
+[
+  {
+    "id": "master-mmo-1000",
+    "title": "Master MMO: Từ số 0 đến 1000$",
+    "desc": "Khóa học thực chiến giúp bạn kiếm ngàn đô đầu tiên từ Affiliate và MMO.",
+    "price": "5,000 đ",
+    "numericPrice": 5000,
+    "oldPrice": "3,500,000 đ",
+    "students": "1.2k",
+    "rating": 4.9,
+    "badge": "Hot",
+    "tag": "MMO",
+    "color": "from-emerald-600 to-emerald-900",
+    "features": [
+      "Kiến thức Affiliate Marketing từ A-Z",
+      "Template hệ thống phễu ngàn đô",
+      "Kỹ năng Tracking & Tối ưu chuyển đổi",
+      "Hỗ trợ 1-1 qua Zalo suốt đời"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+  },
+  {
+    "id": "tiktok-ai-content",
+    "title": "Bứt Phá TikTok với AI Content",
+    "desc": "Xây kênh TikTok triệu view bằng cách sử dụng AI viết kịch bản, làm video.",
+    "price": "990,000 đ",
+    "numericPrice": 990000,
+    "oldPrice": "1,500,000 đ",
+    "students": "3.5k",
+    "rating": 4.8,
+    "badge": "Best Seller",
+    "tag": "Social Media",
+    "color": "from-cyan-600 to-cyan-900",
+    "features": [
+      "Công thức viết kịch bản AI thu hút",
+      "Kho công cụ tạo Text-to-Video",
+      "Chiến thuật ăn đề xuất TikTok",
+      "Cập nhật luật chơi mới nhất"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+  },
+  {
+    "id": "prompt-engineer-pro",
+    "title": "Pro Prompt Engineer: ChatGPT & Claude",
+    "desc": "Trở thành master viết prompt, tăng x10 hiệu suất công việc hàng ngày.",
+    "price": "1,490,000 đ",
+    "numericPrice": 1490000,
+    "oldPrice": "2,000,000 đ",
+    "students": "850",
+    "rating": 5.0,
+    "badge": "New",
+    "tag": "AI",
+    "color": "from-emerald-500 to-cyan-500",
+    "features": [
+      "Cấu trúc Prompt chuẩn Mega-Prompt",
+      "Hack kỹ năng tư duy với Claude 3.5 Sonnet",
+      "Áp dụng AI vào Code, Content, Data",
+      "Cấp quyền Tool AI nội bộ"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+  },
+  {
+    "id": "fullstack-v0-cursor",
+    "title": "Fullstack Web Dev với v0 & Cursor",
+    "desc": "Làm ra một website hoàn chỉnh mà không cần biết quá nhiều về code nhờ sức mạnh AI.",
+    "price": "2,490,000 đ",
+    "numericPrice": 2490000,
+    "oldPrice": "5,000,000 đ",
+    "students": "420",
+    "rating": 4.9,
+    "tag": "Development",
+    "color": "from-teal-600 to-teal-900",
+    "features": [
+      "Quy trình build app bằng Vercel v0",
+      "Sử dụng IDE Cursor siêu việt",
+      "Kết nối Database Firebase & Supabase",
+      "Deploy lên server thực tế"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+  }
+]
