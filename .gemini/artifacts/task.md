@@ -1,10 +1,7 @@
-# Quản lý Tiến độ: Hệ thống Admin Khóa học
+# 🚀 Tiến độ Triển khai Quản lý Kinh doanh
 
-Dưới đây là các bước tôi sẽ thực hiện để chuyển đổi từ `JSON` sang truy xuất `Firestore Realtime` cho các khóa học và giao diện Admin.
-
-- [x] Bước 1: Thêm Menu "Khóa học" vào Sidebar Admin
-- [x] Bước 2: Tạo trang "Danh sách khóa học" (`/admin/courses`)
-- [x] Bước 3: Tạo công cụ đồng bộ dữ liệu (Seed DB) từ `JSON` cũ sang Firestore `courses` collection.
-- [x] Bước 4: Chức năng Thêm mới & Chỉnh sửa / Xóa Khóa học (Form Create/Update).
-- [x] Bước 5: Đưa dữ liệu Firebase ra ngoài mặt người dùng (`/khoa-hoc` và `/khoa-hoc/[slug]`).
-- [x] Bước 6: Đảm bảo luồng tạo hóa đơn tạo đơn hàng (`/api/payos/checkout`) lấy giá chuẩn từ Database Firebase thay vì file tĩnh.
+- [x] 1. Nâng cấp Thống kê Doanh thu trên `admin/page.tsx`
+- [x] 2. Thêm Menu "Đơn hàng" `admin/layout.tsx`
+- [x] 3. Tạo trang Quản lý Đơn hàng `admin/orders/page.tsx`
+- [x] 4. Nâng cấp Quản lý Người dùng: xem chi tiết Khóa học đã sở hữu `admin/users/page.tsx`
+- [ ] 5. Push lên Github để Deploy lên Vercel

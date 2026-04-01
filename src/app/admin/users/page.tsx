@@ -3,7 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
-import { collection, onSnapshot, doc, updateDoc, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { UserData } from "@/lib/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,7 +15,9 @@ import {
   ChevronLeft, 
   Loader2, 
   ShieldCheck, 
-  User as UserIcon 
+  User as UserIcon,
+  X,
+  BookOpen
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -24,6 +26,11 @@ export default function UserManagementPage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  // Modal State
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [userCourses, setUserCourses] = useState<any[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(false);
 
   // Lấy dữ liệu Real-time
   useEffect(() => {
@@ -65,6 +72,32 @@ export default function UserManagementPage() {
     }).format(date);
   };
 
+  // Mở modal và fetch courses
+  const handleViewDetails = async (user: UserData) => {
+    setSelectedUser(user);
+    setLoadingCourses(true);
+    setUserCourses([]);
+    try {
+      const coursesRef = collection(db, "users", user.uid, "user_courses");
+      const snap = await getDocs(coursesRef);
+      const list: any[] = [];
+      snap.forEach((d) => {
+        list.push({ id: d.id, ...d.data() });
+      });
+      // Sort by purchasedAt if exists
+      list.sort((a, b) => {
+        const timeA = a.purchasedAt?.seconds || 0;
+        const timeB = b.purchasedAt?.seconds || 0;
+        return timeB - timeA;
+      });
+      setUserCourses(list);
+    } catch (error) {
+      console.error("Lỗi fetch khóa học:", error);
+    } finally {
+      setLoadingCourses(false);
+    }
+  };
+
   // Xuất CSV
   const handleExportCSV = () => {
     const headers = ["Email, Tên hiển thị, Quyền (Role), Ngày tạo, Đăng nhập cuối"];
@@ -86,10 +119,85 @@ export default function UserManagementPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 w-full mx-auto relative overflow-hidden">
+    <div className="p-4 md:p-8 w-full mx-auto relative overflow-hidden min-h-screen">
       {/* Background Decor */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Modal / Dialog */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedUser(null)}
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            className="relative w-full max-w-2xl glass-card bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]"
+          >
+            <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/[0.02]">
+              <div>
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <UserIcon className="w-5 h-5 text-cyan-400" />
+                  Hồ sơ: {selectedUser.displayName || selectedUser.email}
+                </h3>
+                <p className="text-sm text-slate-400 opacity-80 mt-1">{selectedUser.uid}</p>
+              </div>
+              <button onClick={() => setSelectedUser(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <X className="w-5 h-5 text-slate-400 hover:text-white" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <h4 className="font-bold text-slate-300 mb-4 flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-emerald-400" /> Khóa học đang sở hữu
+              </h4>
+              
+              {loadingCourses ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="w-6 h-6 animate-spin text-cyan-500" />
+                </div>
+              ) : userCourses.length === 0 ? (
+                <div className="text-center py-10 text-slate-500 bg-white/[0.02] rounded-xl border border-white/5">
+                  Học viên này chưa sở hữu khóa học nào.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {userCourses.map(c => (
+                    <div key={c.id} className="p-4 rounded-xl border border-white/10 bg-black/20 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                      <div>
+                        <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10 mb-2 font-mono">
+                          {c.courseId}
+                        </Badge>
+                        <p className="text-sm text-slate-400 flex items-center gap-2">
+                          <span className="font-semibold text-white">Nguồn:</span> {c.source === "mock" ? "Thêm thủ công" : "Mua PayOS"}
+                        </p>
+                      </div>
+                      <div className="text-left sm:text-right">
+                        <p className="font-bold text-cyan-400">
+                          {c.amount ? `${c.amount.toLocaleString("vi-VN")} đ` : "N/A"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {formatDate(c.purchasedAt)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="p-6 border-t border-white/5 bg-black/20 flex justify-end">
+              <Button onClick={() => setSelectedUser(null)} variant="outline" className="border-white/10 hover:bg-white/10">
+                Đóng
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <div className="relative z-10">
         <motion.div
@@ -141,7 +249,7 @@ export default function UserManagementPage() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {users.map((user) => (
-                      <tr key={user.uid} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={user.uid} className="hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => handleViewDetails(user)}>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {user.photoURL ? (
@@ -159,7 +267,7 @@ export default function UserManagementPage() {
                         <td className="px-6 py-4 text-slate-300">
                           {user.email}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                           <div className="relative inline-block w-full max-w-[130px]">
                             {updatingId === user.uid ? (
                               <div className="flex items-center gap-2 text-cyan-400 bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/20">

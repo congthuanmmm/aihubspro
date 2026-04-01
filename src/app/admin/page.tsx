@@ -5,7 +5,7 @@ import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { UserData } from "@/lib/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Users, FileText, UserPlus, TrendingUp } from "lucide-react";
+import { Users, FileText, UserPlus, TrendingUp, DollarSign, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   LineChart,
@@ -22,8 +22,11 @@ export const dynamic = "force-dynamic";
 export default function AdminDashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [users, setUsers] = useState<UserData[]>([]);
-  const [totalPosts, setTotalPosts] = useState(0);
   const [loadingUsers, setLoadingUsers] = useState(true);
+
+  // Thống kê Doanh thu & Đơn hàng
+  const [revenue, setRevenue] = useState(0);
+  const [ordersCount, setOrdersCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -44,20 +47,26 @@ export default function AdminDashboardPage() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch Posts total
+  // Fetch Orders for Revenue
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch("/api/posts");
-        if (res.ok) {
-          const data = await res.json();
-          setTotalPosts(data.length || 0);
+    const qOrders = query(collection(db, "pending_orders"));
+    const unsubscribeOrders = onSnapshot(qOrders, (snapshot) => {
+      let totalRev = 0;
+      let totalSuccess = 0;
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.status === "SUCCESS") {
+          totalSuccess++;
+          if (data.amount) {
+            totalRev += Number(data.amount);
+          }
         }
-      } catch (e) {
-        console.error("Failed to fetch posts:", e);
-      }
-    };
-    fetchPosts();
+      });
+      setRevenue(totalRev);
+      setOrdersCount(totalSuccess);
+    });
+
+    return () => unsubscribeOrders();
   }, []);
 
   // Calculate Stats
@@ -91,28 +100,36 @@ export default function AdminDashboardPage() {
 
   const stats = [
     {
-      title: "Tổng Người Dùng",
-      value: loadingUsers ? "..." : users.length,
-      icon: Users,
-      desc: "Toàn bộ thành viên",
-      color: "text-cyan-400",
-      bg: "bg-cyan-500/10",
-    },
-    {
-      title: "Bài Viết",
-      value: totalPosts,
-      icon: FileText,
-      desc: "Blog posts đã xuất bản",
+      title: "Tổng Doanh Thu",
+      value: loadingUsers ? "..." : `${revenue.toLocaleString("vi-VN")} đ`,
+      icon: DollarSign,
+      desc: "Doanh thu trọn đời",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
     },
     {
-      title: "Đăng Ký Hôm Nay",
+      title: "Đơn Hàng Thành Công",
+      value: loadingUsers ? "..." : ordersCount,
+      icon: ShoppingCart,
+      desc: "Lượt bán khóa học",
+      color: "text-cyan-400",
+      bg: "bg-cyan-500/10",
+    },
+    {
+      title: "Học Viên Đăng Ký Hôm Nay",
       value: loadingUsers ? "..." : `+${newUsersToday}`,
       icon: UserPlus,
       desc: "User mới trong 24h",
       color: "text-amber-400",
       bg: "bg-amber-500/10",
+    },
+    {
+      title: "Tổng Người Dùng",
+      value: loadingUsers ? "..." : users.length,
+      icon: Users,
+      desc: "Toàn bộ thành viên hệ thống",
+      color: "text-purple-400",
+      bg: "bg-purple-500/10",
     },
   ];
 
@@ -129,7 +146,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, idx) => (
           <motion.div
             key={stat.title}

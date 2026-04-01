@@ -12,13 +12,15 @@ import {
   Menu,
   X,
   Bot,
-  BookOpen
+  BookOpen,
+  ShoppingCart
 } from "lucide-react";
 import { firebaseSignOut } from "@/lib/firebase";
 
 const sidebarLinks = [
   { name: "Tổng quan", href: "/admin", icon: LayoutDashboard },
   { name: "Khóa học", href: "/admin/courses", icon: BookOpen },
+  { name: "Đơn hàng", href: "/admin/orders", icon: ShoppingCart },
   { name: "Bài viết", href: "/admin/posts", icon: FileText },
   { name: "Người dùng", href: "/admin/users", icon: Users },
   { name: "Cài đặt", href: "/admin/settings", icon: Settings },
