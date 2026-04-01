@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import courses from "@/data/khoa-hoc.json";
+import { PayOS } from "@payos/node";
 
 export async function POST(request: Request) {
   try {
@@ -34,13 +35,12 @@ export async function POST(request: Request) {
 
     const DOMAIN = request.headers.get("origin") || "http://localhost:3000";
 
-    // Khởi tạo PayOS thực tế bên trong Handler (tránh lỗi build)
-    const PayOS = require("@payos/node");
-    const payos = new PayOS(
-      process.env.PAYOS_CLIENT_ID || "",
-      process.env.PAYOS_API_KEY || "",
-      process.env.PAYOS_CHECKSUM_KEY || ""
-    );
+    // Khởi tạo PayOS
+    const payos = new PayOS({
+      clientId: process.env.PAYOS_CLIENT_ID || "",
+      apiKey: process.env.PAYOS_API_KEY || "",
+      checksumKey: process.env.PAYOS_CHECKSUM_KEY || ""
+    });
 
     const body = {
       orderCode,
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       cancelUrl: `${DOMAIN}/khoa-hoc/${courseId}` // Hủy thì quay về trang giới thiệu
     };
 
-    const paymentLinkRes = await payos.createPaymentLink(body);
+    const paymentLinkRes = await payos.paymentRequests.create(body);
 
     // Trả về Link để Frontend đẩy người dùng thẳng qua cổng QR Payos
     return NextResponse.json({ checkoutUrl: paymentLinkRes.checkoutUrl });

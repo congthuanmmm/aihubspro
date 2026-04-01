@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { PayOS } from "@payos/node";
 
 // Hỗ trợ Mocking qua GET (Browser Redirect)
 export async function GET(request: Request) {
@@ -22,15 +23,14 @@ export async function POST(request: Request) {
     console.log("PayOS Webhook Data:", data);
     
     // Khởi tạo PayOS để xác thực chữ ký Webhook
-    const PayOS = require("@payos/node");
-    const payos = new PayOS(
-      process.env.PAYOS_CLIENT_ID || "",
-      process.env.PAYOS_API_KEY || "",
-      process.env.PAYOS_CHECKSUM_KEY || ""
-    );
+    const payos = new PayOS({
+      clientId: process.env.PAYOS_CLIENT_ID || "",
+      apiKey: process.env.PAYOS_API_KEY || "",
+      checksumKey: process.env.PAYOS_CHECKSUM_KEY || ""
+    });
 
     // Xác thực Webhook (Ném ra lỗi nếu sai signature)
-    const webhookData = payos.verifyPaymentWebhookData(data);
+    const webhookData = await payos.webhooks.verify(data);
 
     if (webhookData.orderCode && (data.code === "00" || data.desc === "success")) {
       return await handlePaymentSuccess(webhookData.orderCode.toString(), true);

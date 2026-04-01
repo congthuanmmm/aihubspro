@@ -68,8 +68,9 @@ function LoginForm() {
       const { user } = await signInWithPopup(auth, googleProvider);
       await syncUserToFirestore(user);
       handleRedirect();
-    } catch (err) {
-      setError("Không thể đăng nhập bằng Google.");
+    } catch (err: any) {
+      console.error("Google Login Error:", err.code, err.message);
+      setError(`Lỗi đăng nhập: ${err.code || "Không xác định"}`);
     } finally {
       setLoading(false);
     }
