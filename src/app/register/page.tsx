@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, googleProvider, auth } from "@/lib/firebase";
 import { syncUserToFirestore } from "@/lib/firestore";
@@ -9,6 +9,14 @@ import Link from "next/link";
 import { Bot, Mail, Lock, User as UserIcon, AlertCircle } from "lucide-react";
 
 export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">Đang tải...</div>}>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -221,7 +229,7 @@ export default function RegisterPage() {
 
         <p className="mt-8 text-center text-sm text-slate-400">
           Đã có tài khoản?{" "}
-          <Link href={`/login${redirectParams ? `?redirect=\${redirectParams}` : ''}`} className="text-emerald-400 font-medium hover:text-cyan-400 transition-colors">
+          <Link href={`/login${redirectParams ? `?redirect=${redirectParams}` : ''}`} className="text-emerald-400 font-medium hover:text-cyan-400 transition-colors">
             Đăng nhập ngay
           </Link>
         </p>

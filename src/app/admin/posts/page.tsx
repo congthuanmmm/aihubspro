@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -8,10 +10,10 @@ import { Badge } from "@/components/ui/badge"
 import { Sparkles, Send, FileText, Image as ImageIcon, Tag, ChevronLeft, Pencil, Trash2, Globe, FileSignature, Users } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import dynamic from "next/dynamic"
+import nextDynamic from "next/dynamic"
 
 // Import MDEditor dynamically to avoid SSR issues
-const MDEditor = dynamic(
+const MDEditor = nextDynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false, loading: () => <div className="h-96 w-full animate-pulse bg-slate-900/50 rounded-xl" /> }
 )

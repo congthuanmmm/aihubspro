@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signInWithEmailAndPassword, signInWithPopup, googleProvider, auth } from "@/lib/firebase";
 import { syncUserToFirestore } from "@/lib/firestore";
@@ -9,6 +9,14 @@ import Link from "next/link";
 import { Bot, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">Đang tải...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -176,7 +184,7 @@ export default function LoginPage() {
 
         <p className="mt-8 text-center text-sm text-slate-400">
           Chưa có tài khoản?{" "}
-          <Link href={`/register${redirectParams ? `?redirect=\${redirectParams}` : ''}`} className="text-cyan-400 font-medium hover:text-emerald-400 transition-colors">
+          <Link href={`/register${redirectParams ? `?redirect=${redirectParams}` : ''}`} className="text-cyan-400 font-medium hover:text-emerald-400 transition-colors">
             Đăng ký ngay
           </Link>
         </p>

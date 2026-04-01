@@ -17,10 +17,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+export const dynamic = "force-dynamic";
+
 export default function AdminDashboardPage() {
+  const [mounted, setMounted] = useState(false);
   const [users, setUsers] = useState<UserData[]>([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [loadingUsers, setLoadingUsers] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch Users
   useEffect(() => {
@@ -168,43 +175,47 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#94a3b8" 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false} 
-                    dy={10}
-                  />
-                  <YAxis 
-                    stroke="#94a3b8" 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false} 
-                    tickFormatter={(value) => `${value}`}
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: "rgba(15, 23, 42, 0.9)", 
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: "0.5rem",
-                      color: "#fff"
-                    }}
-                    itemStyle={{ color: "#22d3ee", fontWeight: "bold" }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="Users" 
-                    stroke="#06b6d4" 
-                    strokeWidth={4}
-                    dot={{ fill: "#06b6d4", strokeWidth: 2, r: 6, stroke: "#0f172a" }}
-                    activeDot={{ r: 8, strokeWidth: 0 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {mounted ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                    <XAxis 
+                      dataKey="date" 
+                      stroke="#94a3b8" 
+                      fontSize={12} 
+                      tickLine={false} 
+                      axisLine={false} 
+                      dy={10}
+                    />
+                    <YAxis 
+                      stroke="#94a3b8" 
+                      fontSize={12} 
+                      tickLine={false} 
+                      axisLine={false} 
+                      tickFormatter={(value) => `${value}`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: "rgba(15, 23, 42, 0.9)", 
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "0.5rem",
+                        color: "#fff"
+                      }}
+                      itemStyle={{ color: "#22d3ee", fontWeight: "bold" }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="Users" 
+                      stroke="#06b6d4" 
+                      strokeWidth={4}
+                      dot={{ fill: "#06b6d4", strokeWidth: 2, r: 6, stroke: "#0f172a" }}
+                      activeDot={{ r: 8, strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="w-full h-full bg-slate-900/50 animate-pulse rounded-xl" />
+              )}
             </div>
           </CardContent>
         </Card>
